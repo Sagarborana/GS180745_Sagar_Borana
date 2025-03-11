@@ -3,6 +3,7 @@ import Layout from "../components/Layout";
 import StorePage from "../pages/Store";
 import SKUPage from "../pages/SKU";
 import PlanningPage from "../pages/Planning";
+import ChartsPage from "../pages/Chart";
 
 const routes: RouteObject[] = [
   {
@@ -12,6 +13,7 @@ const routes: RouteObject[] = [
       { path: "store", element: <StorePage /> },
       { path: "sku", element: <SKUPage /> },
       { path: "planning", element: <PlanningPage /> },
+      { path: "charts", element: <ChartsPage /> },
     ],
   },
 ];
