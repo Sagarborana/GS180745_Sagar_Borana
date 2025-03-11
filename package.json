@@ -12,6 +12,7 @@
   "dependencies": {
     "@ag-grid-community/client-side-row-model": "^32.3.4",
     "@ag-grid-community/core": "^32.3.4",
+    "@reduxjs/toolkit": "^2.6.1",
     "@tailwindcss/vite": "^4.0.12",
     "ag-grid-community": "^33.1.1",
     "ag-grid-enterprise": "^33.1.1",

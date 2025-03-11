@@ -6,7 +6,28 @@ import storesData from "../mockdata/stores.json";
 import skusData from "../mockdata/skus.json";
 import calendarData from "../mockdata/calendar.json";
 import planningData from "../mockdata/planning.json";
-import { CellClassParams, ValueFormatterParams } from "ag-grid-community";
+import {
+  CellClassParams,
+  ClientSideRowModelModule,
+  ColumnApiModule,
+  ColumnAutoSizeModule,
+  ModuleRegistry,
+  NumberEditorModule,
+  SizeColumnsToContentStrategy,
+  SizeColumnsToFitGridStrategy,
+  SizeColumnsToFitProvidedWidthStrategy,
+  TextEditorModule,
+  ValueFormatterParams,
+} from "ag-grid-community";
+import "../index.css";
+
+ModuleRegistry.registerModules([
+  ColumnApiModule,
+  ColumnAutoSizeModule,
+  ClientSideRowModelModule,
+  TextEditorModule,
+  NumberEditorModule
+]);
 
 const PlanningPage: React.FC = () => {
   const [rowData, setRowData] = useState<any[]>([]);
@@ -23,6 +44,8 @@ const PlanningPage: React.FC = () => {
           gridDataMap[key] = {
             store: store.Label,
             sku: sku.Label,
+            skuID: sku.ID,
+            storeID: store.ID,
           };
         }
       });
@@ -37,17 +60,15 @@ const PlanningPage: React.FC = () => {
       const [storeID, skuID] = key.split("-");
       const sku = skusData.find((s) => s.ID === skuID);
 
-      let hasSales = false; // Track if this Store-SKU has any sales
+      let hasSales = false;
 
       calendarData.forEach((week) => {
         const salesUnits = planningMap[`${storeID}-${skuID}-${week.Week}`] || 0;
-
-        if (salesUnits > 0) hasSales = true; // Mark as having sales
+        if (salesUnits > 0) hasSales = true;
 
         const salesDollars = sku ? salesUnits * sku.Price : 0;
         const gmDollars = sku ? salesDollars - salesUnits * sku.Cost : 0;
-        const gmPercent =
-          salesDollars !== 0 ? (gmDollars / salesDollars) * 100 : 0;
+        const gmPercent = salesDollars !== 0 ? (gmDollars / salesDollars) * 100 : 0;
 
         gridDataMap[key][`salesUnits_${week.Week}`] = salesUnits;
         gridDataMap[key][`salesDollars_${week.Week}`] = salesDollars;
@@ -55,14 +76,11 @@ const PlanningPage: React.FC = () => {
         gridDataMap[key][`gmPercent_${week.Week}`] = gmPercent;
       });
 
-      // Only adding to rowData if it has at least one non-zero sales week
       if (!hasSales) delete gridDataMap[key];
     });
 
     const gridData = Object.values(gridDataMap);
-
     console.timeEnd("Processing Data");
-
     setRowData(gridData);
   }, []);
 
@@ -80,8 +98,10 @@ const PlanningPage: React.FC = () => {
 
     const monthColumns = Object.keys(monthMap).map((monthLabel) => ({
       headerName: monthLabel,
+      headerClass: "center-aligned-group-header",
       children: monthMap[monthLabel].map((week) => ({
         headerName: week["Week Label"],
+        headerClass: "center-aligned-group-header",
         children: [
           {
             headerName: "Sales Units",
@@ -127,13 +147,52 @@ const PlanningPage: React.FC = () => {
     ];
   }, []);
 
+  /** 
+   * Handles changes in editable fields and recalculates dependent values
+   */
+  const onCellValueChanged = (params: any) => {
+    const { data, colDef, newValue } = params;
+
+    if (colDef.field.startsWith("salesUnits_")) {
+      const weekKey = colDef.field.replace("salesUnits_", ""); // Extract week number
+      const sku = skusData.find((s) => s.ID === data.skuID);
+
+      if (!sku) return;
+
+      const updatedSalesUnits = Number(newValue) || 0;
+      const updatedSalesDollars = updatedSalesUnits * sku.Price;
+      const updatedGmDollars = updatedSalesDollars - updatedSalesUnits * sku.Cost;
+      const updatedGmPercent =
+        updatedSalesDollars !== 0 ? (updatedGmDollars / updatedSalesDollars) * 100 : 0;
+
+      data[`salesUnits_${weekKey}`] = updatedSalesUnits;
+      data[`salesDollars_${weekKey}`] = updatedSalesDollars;
+      data[`gmDollars_${weekKey}`] = updatedGmDollars;
+      data[`gmPercent_${weekKey}`] = updatedGmPercent;
+
+      // Trigger grid update
+      setRowData([...rowData]);
+    }
+  };
+
+  const autoSizeStrategy = useMemo<
+  | SizeColumnsToFitGridStrategy
+  | SizeColumnsToFitProvidedWidthStrategy
+  | SizeColumnsToContentStrategy
+>(() => {
+  return {
+    type: "fitCellContents",
+    includeHeaders: true,
+  };
+}, []);
+
   return (
     <div className="ag-theme-quartz h-full w-full p-4">
       <AgGridReact
         rowData={rowData}
         columnDefs={columnDefsMemo}
-        groupDisplayType="groupRows"
-        animateRows={true}
+        onCellValueChanged={onCellValueChanged}
+        autoSizeStrategy={autoSizeStrategy}
       />
     </div>
   );

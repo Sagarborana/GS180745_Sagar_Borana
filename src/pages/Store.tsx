@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ColDef, ICellRendererParams, RowDragModule } from "ag-grid-community";
 import { ClientSideRowModelModule, ModuleRegistry } from "ag-grid-community";
-import { RowNumbersModule} from "ag-grid-enterprise";
 import { MdDeleteOutline } from "react-icons/md";
-import storesData from "../mockdata/stores.json";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../redux/store/store";
+import { addStore, deleteStore } from "../redux/slices/storeSlice";
 
-ModuleRegistry.registerModules([RowDragModule, ClientSideRowModelModule, RowNumbersModule]);
+ModuleRegistry.registerModules([RowDragModule, ClientSideRowModelModule]);
 
 const StorePage: React.FC = () => {
-  const [rowData, setRowData] = useState<any[]>([]);
+  const dispatch = useDispatch();
+  const stores = useSelector((state: RootState) => state.store.stores);
+
   const [showPopup, setShowPopup] = useState(false);
   const [newStore, setNewStore] = useState({
     ID: "",
@@ -20,61 +23,55 @@ const StorePage: React.FC = () => {
     State: "",
   });
 
-  useEffect(() => {
-    setRowData(storesData);
-  }, []);
-
-  const deleteRow = (id: string) => {
-    setRowData((prevData) => prevData.filter((row) => row["ID"] !== id));
+  const handleDelete = (id: string) => {
+    dispatch(deleteStore(id));
   };
 
-  const addNewStore = () => {
+  const handleAddStore = () => {
     if (!newStore.ID || !newStore.Label || !newStore.City || !newStore.State) {
       alert("Please fill all fields!");
       return;
     }
-  
-    // Check if the ID already exists
-    const isDuplicate = rowData.some((store) => store["ID"] === newStore.ID);
+
+    // Check if ID already exists
+    const isDuplicate = stores.some((store) => store.ID === newStore.ID);
     if (isDuplicate) {
       alert("Store ID already exists! Please enter a unique ID.");
       return;
     }
-  
-    setRowData((prevData) => [...prevData, newStore]);
+
+    dispatch(addStore(newStore));
     setShowPopup(false);
     setNewStore({ ID: "", Label: "", City: "", State: "" });
   };
-  
 
   const columnDefs: ColDef[] = [
-    
-    { headerName: "Store", field: "Label", rowDrag: true },
-    { headerName: "City", field: "City" },
-    { headerName: "State", field: "State" },
     {
       headerName: "",
       field: "actions",
       width: 60,
       cellRenderer: (params: ICellRendererParams) => (
         <button
-          onClick={() => deleteRow(params.data["ID"])}
+          onClick={() => handleDelete(params.data.ID)}
           className="text-red-500 hover:text-red-700 hover:cursor-pointer"
         >
           <MdDeleteOutline size={24} color="black" />
         </button>
       ),
     },
+    { headerName: "S.No", field: "seqId", width: 100, rowDrag: true },
+    { headerName: "Store", field: "Label" },
+    { headerName: "City", field: "City" },
+    { headerName: "State", field: "State" },
   ];
 
   return (
     <div className="p-4 w-full">
       <div className="ag-theme-quartz h-[calc(100%-60px)] w-full">
         <AgGridReact
-          rowData={rowData}
+          rowData={stores.map((store, index) => ({ ...store, seqId: index + 1 }))}
           columnDefs={columnDefs}
           rowDragManaged={true}
-          rowNumbers={true}
           rowModelType="clientSide"
         />
       </div>
@@ -88,8 +85,8 @@ const StorePage: React.FC = () => {
 
       {/* Popup for Adding New Store */}
       {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-6 rounded shadow-lg w-96">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+        <div className="bg-white p-6 rounded shadow-lg w-96">
             <h2 className="text-lg font-bold mb-4">Add New Store</h2>
             <input
               type="text"
@@ -121,7 +118,7 @@ const StorePage: React.FC = () => {
             />
             <div className="flex justify-between">
               <button
-                onClick={addNewStore}
+                onClick={handleAddStore}
                 className="bg-green-500 text-white px-4 py-2 rounded"
               >
                 Add Store
