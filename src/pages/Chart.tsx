@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ComposedChart, CartesianGrid } from "recharts";
+import { Bar, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ComposedChart, CartesianGrid } from "recharts";
 import storesData from "../mockdata/stores.json";
 import calendarData from "../mockdata/calendar.json";
 import planningData from "../mockdata/planning.json";

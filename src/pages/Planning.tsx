@@ -1,15 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
-import { ColDef } from "ag-grid-community";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import storesData from "../mockdata/stores.json";
 import skusData from "../mockdata/skus.json";
 import calendarData from "../mockdata/calendar.json";
 import planningData from "../mockdata/planning.json";
+import { CellClassParams, ValueFormatterParams } from "ag-grid-community";
 
 const PlanningPage: React.FC = () => {
   const [rowData, setRowData] = useState<any[]>([]);
-  const [columnDefs, setColumnDefs] = useState<ColDef[]>([]);
 
   useEffect(() => {
     console.time("Processing Data");
@@ -44,9 +44,10 @@ const PlanningPage: React.FC = () => {
 
         if (salesUnits > 0) hasSales = true; // Mark as having sales
 
-        const salesDollars = salesUnits * sku.Price;
-        const gmDollars = salesDollars - (salesUnits * sku.Cost);
-        const gmPercent = salesDollars !== 0 ? (gmDollars / salesDollars) * 100 : 0;
+        const salesDollars = sku ? salesUnits * sku.Price : 0;
+        const gmDollars = sku ? salesDollars - salesUnits * sku.Cost : 0;
+        const gmPercent =
+          salesDollars !== 0 ? (gmDollars / salesDollars) * 100 : 0;
 
         gridDataMap[key][`salesUnits_${week.Week}`] = salesUnits;
         gridDataMap[key][`salesDollars_${week.Week}`] = salesDollars;
@@ -70,7 +71,7 @@ const PlanningPage: React.FC = () => {
 
     const monthMap: Record<string, any[]> = {};
     calendarData.forEach((week) => {
-      const monthLabel = week["Month Label"]; 
+      const monthLabel = week["Month Label"];
       if (!monthMap[monthLabel]) {
         monthMap[monthLabel] = [];
       }
@@ -78,23 +79,39 @@ const PlanningPage: React.FC = () => {
     });
 
     const monthColumns = Object.keys(monthMap).map((monthLabel) => ({
-      headerName: monthLabel, 
+      headerName: monthLabel,
       children: monthMap[monthLabel].map((week) => ({
         headerName: week["Week Label"],
         children: [
-          { headerName: "Sales Units", field: `salesUnits_${week.Week}`, editable: true, type: "numericColumn" },
-          { headerName: "Sales Dollars", field: `salesDollars_${week.Week}`, valueFormatter: (params) => `$${params.value?.toFixed(2)}` },
-          { headerName: "GM Dollars", field: `gmDollars_${week.Week}`, valueFormatter: (params) => `$${params.value?.toFixed(2)}` },
-          { 
+          {
+            headerName: "Sales Units",
+            field: `salesUnits_${week.Week}`,
+            editable: true,
+            type: "numericColumn",
+          },
+          {
+            headerName: "Sales Dollars",
+            field: `salesDollars_${week.Week}`,
+            valueFormatter: (params: ValueFormatterParams) =>
+              `$${params.value?.toFixed(2)}`,
+          },
+          {
+            headerName: "GM Dollars",
+            field: `gmDollars_${week.Week}`,
+            valueFormatter: (params: ValueFormatterParams) =>
+              `$${params.value?.toFixed(2)}`,
+          },
+          {
             headerName: "GM %",
             field: `gmPercent_${week.Week}`,
-            valueFormatter: (params) => `${params.value?.toFixed(2)}%`,
-            cellStyle: (params) => {
+            valueFormatter: (params: ValueFormatterParams) =>
+              `${params.value?.toFixed(2)}%`,
+            cellStyle: (params: CellClassParams) => {
               const value = params.value;
-              if (value >= 40) return { backgroundColor: "#44A248"};
+              if (value >= 40) return { backgroundColor: "#44A248" };
               if (value >= 10) return { backgroundColor: "#FACC14" };
               if (value >= 5) return { backgroundColor: "#FB923C" };
-              return { backgroundColor: "#FDA5A5"};
+              return { backgroundColor: "#FDA5A5" };
             },
           },
         ],
@@ -108,11 +125,16 @@ const PlanningPage: React.FC = () => {
       { headerName: "SKU", field: "sku" },
       ...monthColumns,
     ];
-  }, [calendarData]);
+  }, []);
 
   return (
     <div className="ag-theme-quartz h-full w-full p-4">
-      <AgGridReact rowData={rowData} columnDefs={columnDefsMemo} groupDisplayType="groupRows" animateRows={true} />
+      <AgGridReact
+        rowData={rowData}
+        columnDefs={columnDefsMemo}
+        groupDisplayType="groupRows"
+        animateRows={true}
+      />
     </div>
   );
 };
