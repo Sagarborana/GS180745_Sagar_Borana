@@ -1,56 +1,69 @@
 import { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { ColDef, ICellRendererParams, RowDragModule } from "ag-grid-community";
+import { ColDef, ICellRendererParams } from "ag-grid-community";
 import { ClientSideRowModelModule, ModuleRegistry } from "ag-grid-community";
-import { RowNumbersModule} from "ag-grid-enterprise";
+import { RowNumbersModule } from "ag-grid-enterprise";
 import { MdDeleteOutline } from "react-icons/md";
-import storesData from "../mockdata/stores.json";
+import skusData from "../mockdata/skus.json";
 
-ModuleRegistry.registerModules([RowDragModule, ClientSideRowModelModule, RowNumbersModule]);
+ModuleRegistry.registerModules([ClientSideRowModelModule, RowNumbersModule]);
 
-const StorePage: React.FC = () => {
+const SKUPage: React.FC = () => {
   const [rowData, setRowData] = useState<any[]>([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [newStore, setNewStore] = useState({
+  const [newSKU, setNewSKU] = useState({
     ID: "",
     Label: "",
-    City: "",
-    State: "",
+    Class: "",
+    Department: "",
+    Price: "",
+    Cost: "",
   });
 
   useEffect(() => {
-    setRowData(storesData);
+    setRowData(skusData);
   }, []);
 
   const deleteRow = (id: string) => {
     setRowData((prevData) => prevData.filter((row) => row["ID"] !== id));
   };
 
-  const addNewStore = () => {
-    if (!newStore.ID || !newStore.Label || !newStore.City || !newStore.State) {
+  const addNewSKU = () => {
+    if (
+      !newSKU.ID ||
+      !newSKU.Label ||
+      !newSKU.Class ||
+      !newSKU.Department ||
+      !newSKU.Cost ||
+      !newSKU.Price
+    ) {
       alert("Please fill all fields!");
       return;
     }
-  
-    // Check if the ID already exists
-    const isDuplicate = rowData.some((store) => store["ID"] === newStore.ID);
+
+    const isDuplicate = rowData.some((SKU) => SKU["ID"] === newSKU.ID);
     if (isDuplicate) {
-      alert("Store ID already exists! Please enter a unique ID.");
+      alert("SKU ID already exists! Please enter a unique ID.");
       return;
     }
-  
-    setRowData((prevData) => [...prevData, newStore]);
+
+    setRowData((prevData) => [...prevData, newSKU]);
     setShowPopup(false);
-    setNewStore({ ID: "", Label: "", City: "", State: "" });
+    setNewSKU({
+      ID: "",
+      Label: "",
+      Class: "",
+      Department: "",
+      Price: "",
+      Cost: "",
+    });
   };
-  
 
   const columnDefs: ColDef[] = [
-    
-    { headerName: "Store", field: "Label", rowDrag: true },
-    { headerName: "City", field: "City" },
-    { headerName: "State", field: "State" },
+    { headerName: "SKU", field: "Label" },
+    { headerName: "Price", field: "Price" },
+    { headerName: "Cost", field: "Cost" },
     {
       headerName: "",
       field: "actions",
@@ -72,8 +85,6 @@ const StorePage: React.FC = () => {
         <AgGridReact
           rowData={rowData}
           columnDefs={columnDefs}
-          rowDragManaged={true}
-          rowNumbers={true}
           rowModelType="clientSide"
         />
       </div>
@@ -82,48 +93,64 @@ const StorePage: React.FC = () => {
         onClick={() => setShowPopup(true)}
         className="mt-4 p-2 bg-orange-400 text-white rounded"
       >
-        New Store
+        New SKU
       </button>
 
-      {/* Popup for Adding New Store */}
+      {/* Popup for Adding New SKU */}
       {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="bg-white p-6 rounded shadow-lg w-96">
-            <h2 className="text-lg font-bold mb-4">Add New Store</h2>
+            <h2 className="text-lg font-bold mb-4">Add New SKU</h2>
             <input
               type="text"
-              placeholder="Store ID"
+              placeholder="SKU ID"
               className="border p-2 w-full mb-2"
-              value={newStore.ID}
-              onChange={(e) => setNewStore({ ...newStore, ID: e.target.value })}
+              value={newSKU.ID}
+              onChange={(e) => setNewSKU({ ...newSKU, ID: e.target.value })}
             />
             <input
               type="text"
               placeholder="Label"
               className="border p-2 w-full mb-2"
-              value={newStore.Label}
-              onChange={(e) => setNewStore({ ...newStore, Label: e.target.value })}
+              value={newSKU.Label}
+              onChange={(e) => setNewSKU({ ...newSKU, Label: e.target.value })}
             />
             <input
               type="text"
-              placeholder="City"
+              placeholder="Class"
               className="border p-2 w-full mb-2"
-              value={newStore.City}
-              onChange={(e) => setNewStore({ ...newStore, City: e.target.value })}
+              value={newSKU.Class}
+              onChange={(e) => setNewSKU({ ...newSKU, Class: e.target.value })}
             />
             <input
               type="text"
-              placeholder="State"
+              placeholder="Department"
               className="border p-2 w-full mb-4"
-              value={newStore.State}
-              onChange={(e) => setNewStore({ ...newStore, State: e.target.value })}
+              value={newSKU.Department}
+              onChange={(e) =>
+                setNewSKU({ ...newSKU, Department: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Cost"
+              className="border p-2 w-full mb-4"
+              value={newSKU.Cost}
+              onChange={(e) => setNewSKU({ ...newSKU, Cost: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Price"
+              className="border p-2 w-full mb-4"
+              value={newSKU.Price}
+              onChange={(e) => setNewSKU({ ...newSKU, Price: e.target.value })}
             />
             <div className="flex justify-between">
               <button
-                onClick={addNewStore}
+                onClick={addNewSKU}
                 className="bg-green-500 text-white px-4 py-2 rounded"
               >
-                Add Store
+                Add SKU
               </button>
               <button
                 onClick={() => setShowPopup(false)}
@@ -139,4 +166,4 @@ const StorePage: React.FC = () => {
   );
 };
 
-export default StorePage;
+export default SKUPage;
