@@ -10,11 +10,11 @@ import Login from "../pages/Login";
 const routes: RouteObject[] = [
   { path: "/login", element: <Login /> },
   {
-    path: "/",
+    path: "/GS180745_Sagar_Borana",
     element: <PrivateRoute />, // Private route wrapper
     children: [
       {
-        path: "/", 
+        path: "/GS180745_Sagar_Borana", 
         element: <Layout />, // Layout should wrap child pages
         children: [
           { path: "planning", element: <PlanningPage /> },
