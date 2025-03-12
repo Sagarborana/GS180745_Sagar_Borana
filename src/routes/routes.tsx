@@ -1,4 +1,4 @@
-import { RouteObject } from "react-router-dom";
+import { RouteObject, Navigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import StorePage from "../pages/Store";
 import SKUPage from "../pages/SKU";
@@ -14,9 +14,10 @@ const routes: RouteObject[] = [
     element: <PrivateRoute />, // Private route wrapper
     children: [
       {
-        path: "/GS180745_Sagar_Borana", 
+        path: "/GS180745_Sagar_Borana",
         element: <Layout />, // Layout should wrap child pages
         children: [
+          { index: true, element: <Navigate to="store" replace /> }, // Redirect root to /store
           { path: "planning", element: <PlanningPage /> },
           { path: "store", element: <StorePage /> },
           { path: "sku", element: <SKUPage /> },
