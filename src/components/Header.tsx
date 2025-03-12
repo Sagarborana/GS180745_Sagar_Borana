@@ -15,8 +15,9 @@ const Header: React.FC = () => {
         navigate("/login");
     };
   return (
-    <header className="w-full bg-white text-black p-4 shadow-md h-15 flex justify-between">
+    <header className="w-full bg-white text-black p-4 shadow-md h-15 flex justify-between items-center">
       <img src={Logo} className="h-12"/>
+      <h1 className="font-semibold text-3xl">Data Viewer App</h1>
       <MdOutlineLogout size={30} className="cursor-pointer" onClick={handleLogout}/>
     </header>
   );

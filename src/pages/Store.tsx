@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { ColDef, ICellRendererParams, RowDragModule } from "ag-grid-community";
+import {
+  ColDef,
+  ICellRendererParams,
+  RowDragModule,
+} from "ag-grid-community";
 import { ClientSideRowModelModule, ModuleRegistry } from "ag-grid-community";
 import { MdDeleteOutline } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store/store";
 import { addStore, deleteStore } from "../redux/slices/storeSlice.ts";
+import DefaultAgGrid from "../utils/DefaultAgGrid.tsx";
 
 ModuleRegistry.registerModules([RowDragModule, ClientSideRowModelModule]);
 
@@ -50,6 +54,8 @@ const StorePage: React.FC = () => {
       headerName: "",
       field: "actions",
       width: 60,
+      filter: false, 
+      sortable: false,
       cellRenderer: (params: ICellRendererParams) => (
         <button
           onClick={() => handleDelete(params.data.ID)}
@@ -59,7 +65,7 @@ const StorePage: React.FC = () => {
         </button>
       ),
     },
-    { headerName: "S.No", field: "seqId", width: 100, rowDrag: true },
+    { headerName: "S.No", field: "seqId", width: 100, rowDrag: true, filter: false, sortable: false },
     { headerName: "Store", field: "Label" },
     { headerName: "City", field: "City" },
     { headerName: "State", field: "State" },
@@ -68,11 +74,13 @@ const StorePage: React.FC = () => {
   return (
     <div className="p-4 w-full">
       <div className="ag-theme-quartz h-[calc(100%-60px)] w-full">
-        <AgGridReact
-          rowData={stores.map((store, index) => ({ ...store, seqId: index + 1 }))}
+        <DefaultAgGrid
+          rowData={stores.map((store, index) => ({
+            ...store,
+            seqId: index + 1,
+          }))}
           columnDefs={columnDefs}
           rowDragManaged={true}
-          rowModelType="clientSide"
         />
       </div>
 
@@ -86,7 +94,7 @@ const StorePage: React.FC = () => {
       {/* Popup for Adding New Store */}
       {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-        <div className="bg-white p-6 rounded shadow-lg w-96">
+          <div className="bg-white p-6 rounded shadow-lg w-96">
             <h2 className="text-lg font-bold mb-4">Add New Store</h2>
             <input
               type="text"
@@ -100,21 +108,27 @@ const StorePage: React.FC = () => {
               placeholder="Label"
               className="border p-2 w-full mb-2"
               value={newStore.Label}
-              onChange={(e) => setNewStore({ ...newStore, Label: e.target.value })}
+              onChange={(e) =>
+                setNewStore({ ...newStore, Label: e.target.value })
+              }
             />
             <input
               type="text"
               placeholder="City"
               className="border p-2 w-full mb-2"
               value={newStore.City}
-              onChange={(e) => setNewStore({ ...newStore, City: e.target.value })}
+              onChange={(e) =>
+                setNewStore({ ...newStore, City: e.target.value })
+              }
             />
             <input
               type="text"
               placeholder="State"
               className="border p-2 w-full mb-4"
               value={newStore.State}
-              onChange={(e) => setNewStore({ ...newStore, State: e.target.value })}
+              onChange={(e) =>
+                setNewStore({ ...newStore, State: e.target.value })
+              }
             />
             <div className="flex justify-between">
               <button

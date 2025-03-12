@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ColDef, ICellRendererParams } from "ag-grid-community";
 import {
@@ -14,6 +13,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store/store";
 import { addSKU, deleteSKU, SKU, updateSKU } from "../redux/slices/skuSlice.ts";
+import DefaultAgGrid from "../utils/DefaultAgGrid.tsx";
 
 ModuleRegistry.registerModules([
   ColumnApiModule,
@@ -86,6 +86,8 @@ const SKUPage: React.FC = () => {
       headerName: "",
       field: "actions",
       width: 60,
+      filter: false, 
+      sortable: false,
       cellRenderer: (params: ICellRendererParams) => (
         <button
           onClick={() => deleteRow(params.data["ID"])}
@@ -103,10 +105,9 @@ const SKUPage: React.FC = () => {
   return (
     <div className="p-4 w-full">
       <div className="ag-theme-quartz h-[calc(100%-60px)] w-full">
-        <AgGridReact
+        <DefaultAgGrid
           rowData={skus}
           columnDefs={columnDefs}
-          rowModelType="clientSide"
           onCellValueChanged={onCellValueChanged}
         />
       </div>

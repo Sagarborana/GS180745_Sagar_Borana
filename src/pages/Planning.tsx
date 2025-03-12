@@ -3,7 +3,6 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import { useDispatch, useSelector } from "react-redux";
 import { calculatePlanningData, updateSalesUnits } from "../redux/slices/planningSlice.ts";
 import { useEffect, useMemo } from "react";
-import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import calendarData from "../mockdata/calendar.json";
 import {
@@ -22,6 +21,7 @@ import {
 } from "ag-grid-community";
 import "../index.css";
 import { RootState } from "../redux/store/store";
+import DefaultAgGrid from "../utils/DefaultAgGrid.tsx";
 
 ModuleRegistry.registerModules([
   ColumnApiModule,
@@ -67,7 +67,6 @@ const PlanningPage: React.FC = () => {
               headerName: "Sales Units",
               field: `salesUnits_${week.Week}`,
               editable: true,
-              type: "numericColumn",
             },
             {
               headerName: "Sales Dollars",
@@ -128,7 +127,7 @@ const PlanningPage: React.FC = () => {
 
   return (
     <div className="ag-theme-quartz h-full w-full p-4">
-      <AgGridReact
+      <DefaultAgGrid
         rowData={planningData}
         columnDefs={columnDefsMemo}
         onCellValueChanged={onCellValueChanged}
