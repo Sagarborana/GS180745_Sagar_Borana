@@ -6,22 +6,22 @@ const Sidebar: React.FC = () => {
     <div className="w-48 bg-white text-black">
       <nav>
         <ul className="list-none py-4">
-          <li><NavLink to="/store" className={({ isActive }) =>
+          <li><NavLink to="/GS180745_Sagar_Borana/store" className={({ isActive }) =>
                   `block py-4 px-6 hover:bg-gray-700 hover:text-white ${
                     isActive ? "bg-gray-700 text-white" : ""
                   }`
                 }>Store</NavLink></li>
-          <li><NavLink to="/sku" className={({ isActive }) =>
+          <li><NavLink to="/GS180745_Sagar_Borana/sku" className={({ isActive }) =>
                   `block py-4 px-6 hover:bg-gray-700 hover:text-white ${
                     isActive ? "bg-gray-700 text-white" : ""
                   }`
                 }>SKU</NavLink></li>
-          <li><NavLink to="/planning" className={({ isActive }) =>
+          <li><NavLink to="/GS180745_Sagar_Borana/planning" className={({ isActive }) =>
                   `block py-4 px-6 hover:bg-gray-700 hover:text-white ${
                     isActive ? "bg-gray-700 text-white" : ""
                   }`
                 }>Planning</NavLink></li>
-          <li><NavLink to="/charts" className={({ isActive }) =>
+          <li><NavLink to="/GS180745_Sagar_Borana/charts" className={({ isActive }) =>
                   `block py-4 px-6 hover:bg-gray-700 hover:text-white ${
                     isActive ? "bg-gray-700 text-white" : ""
                   }`
