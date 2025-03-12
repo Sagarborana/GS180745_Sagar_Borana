@@ -86,7 +86,6 @@ const PlanningPage: React.FC = () => {
               valueFormatter: (params: ValueFormatterParams) =>
                 params.value ? `${params.value.toFixed(2)}%` : "0.00%",
               cellStyle: (params: CellClassParams) => {
-                console.log(params)
                 const value = params.value;
                 if (value >= 40) return { backgroundColor: "#44A248" };
                 if (value >= 10) return { backgroundColor: "#FACC14" };

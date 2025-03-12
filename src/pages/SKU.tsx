@@ -14,6 +14,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store/store";
 import { addSKU, deleteSKU, SKU, updateSKU } from "../redux/slices/skuSlice.ts";
 import DefaultAgGrid from "../utils/DefaultAgGrid.tsx";
+import AddNewItem from "../components/AddNewItem.tsx";
 
 ModuleRegistry.registerModules([
   ColumnApiModule,
@@ -29,31 +30,12 @@ const SKUPage: React.FC = () => {
   const skus = sku.map((unit: SKU) => ({ ...unit }));
   
   const [showPopup, setShowPopup] = useState(false);
-  const [newSKU, setNewSKU] = useState<SKU>({
-    ID: "",
-    Label: "",
-    Class: "",
-    Department: "",
-    Price: 0,
-    Cost: 0,
-  });
 
   const deleteRow = (id: string) => {
     dispatch(deleteSKU(id));
   };
 
-  const addNewSKU = () => {
-    if (
-      !newSKU.ID ||
-      !newSKU.Label ||
-      !newSKU.Class ||
-      !newSKU.Department ||
-      !newSKU.Cost ||
-      !newSKU.Price
-    ) {
-      alert("Please fill all fields!");
-      return;
-    }
+  const addNewSKU = (newSKU: { ID: string, Label: string, Class: string, Department: string, Cost: number | string, Price: number | string }) => {
 
     const isDuplicate = skus.some((SKU) => SKU.ID === newSKU.ID);
     if (isDuplicate) {
@@ -61,23 +43,19 @@ const SKUPage: React.FC = () => {
       return;
     }
 
-    dispatch(addSKU(newSKU));
+    const formattedSKU = {
+      ...newSKU,
+      Cost: newSKU.Cost === "" ? 0 : Number(newSKU.Cost),
+      Price: newSKU.Price === "" ? 0 : Number(newSKU.Price),
+    };
+
+    dispatch(addSKU(formattedSKU));
     setShowPopup(false);
-    setNewSKU({
-      ID: "",
-      Label: "",
-      Class: "",
-      Department: "",
-      Price: 0,
-      Cost: 0,
-    });
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onCellValueChanged = (params: any) => {
-    console.log(params);
     const { data, colDef, newValue } = params;
-    console.log({ ID: data.ID, field: colDef.field!, value: newValue });
     dispatch(updateSKU({ ID: data.ID, field: colDef.field!, value: newValue }));
   };
 
@@ -112,81 +90,24 @@ const SKUPage: React.FC = () => {
         />
       </div>
 
-      <button
-        onClick={() => setShowPopup(true)}
-        className="mt-4 p-2 bg-orange-400 text-white rounded"
-      >
+      <button onClick={() => setShowPopup(true)} className="mt-4 p-2 bg-orange-400 text-white rounded cursor-pointer">
         New SKU
       </button>
-
       {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded shadow-lg w-96">
-            <h2 className="text-lg font-bold mb-4">Add New SKU</h2>
-            <input
-              type="text"
-              placeholder="SKU ID"
-              className="border p-2 w-full mb-2"
-              value={newSKU.ID}
-              onChange={(e) => setNewSKU({ ...newSKU, ID: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Label"
-              className="border p-2 w-full mb-2"
-              value={newSKU.Label}
-              onChange={(e) => setNewSKU({ ...newSKU, Label: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Class"
-              className="border p-2 w-full mb-2"
-              value={newSKU.Class}
-              onChange={(e) => setNewSKU({ ...newSKU, Class: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Department"
-              className="border p-2 w-full mb-4"
-              value={newSKU.Department}
-              onChange={(e) =>
-                setNewSKU({ ...newSKU, Department: e.target.value })
-              }
-            />
-            <input
-              type="text"
-              placeholder="Cost"
-              className="border p-2 w-full mb-4"
-              value={newSKU.Cost}
-              onChange={(e) =>
-                setNewSKU({ ...newSKU, Cost: parseInt(e.target.value) })
-              }
-            />
-            <input
-              type="text"
-              placeholder="Price"
-              className="border p-2 w-full mb-4"
-              value={newSKU.Price}
-              onChange={(e) =>
-                setNewSKU({ ...newSKU, Price: parseInt(e.target.value) })
-              }
-            />
-            <div className="flex justify-between">
-              <button
-                onClick={addNewSKU}
-                className="bg-green-500 text-white px-4 py-2 rounded"
-              >
-                Add SKU
-              </button>
-              <button
-                onClick={() => setShowPopup(false)}
-                className="bg-red-500 text-white px-4 py-2 rounded"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+        <AddNewItem
+          title="Add New SKU"
+          fields={[
+            { key: "ID", placeholder: "SKU ID" },
+            { key: "Label", placeholder: "SKU Label" },
+            { key: "Class", placeholder: "Class" },
+            { key: "Department", placeholder: "Department" },
+            { key: "Cost", placeholder: "Cost", type: "number" },
+            { key: "Price", placeholder: "Price", type: "number" },
+          ]}
+          onSave={addNewSKU}
+          onClose={() => setShowPopup(false)}
+          initialState={{ ID: "", Label: "", Class: "", Department: "", Cost: "", Price: "" }}
+        />
       )}
     </div>
   );
