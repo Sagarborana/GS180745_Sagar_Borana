@@ -9,7 +9,7 @@ const initialState: AuthState = {
 };
 export const dummyUser = {
     email: "testuser@gsynergy.com",
-    password: "GSynergyTest!2025", // Replace with a strong password
+    password: "GSynergyTest!2025",
   };
   
 

@@ -6,4 +6,8 @@ export default defineConfig({
   
   base: '/GS180745_Sagar_Borana/',
   plugins: [react(), tailwindcss()],
+  build: {
+    outDir: "dist",
+    assetsDir: "assets",
+  },
 });
