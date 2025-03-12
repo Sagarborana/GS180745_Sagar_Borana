@@ -21,10 +21,13 @@ jobs:
         run: npm install
 
       - name: Build Project
-        run: npm run build --base=/GS180745_Sagar_Borana/
+        run: npm run build
+
+      - name: Disable Jekyll
+        run: touch dist/.nojekyll_
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: dist
