@@ -8,7 +8,7 @@ interface Store {
     State: string;
 }
 
-interface StoreWithSeq {
+export interface StoreWithSeq {
     ID: string;
     Label: string;
     City: string;

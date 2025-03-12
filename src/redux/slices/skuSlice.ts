@@ -10,7 +10,6 @@ export interface SKU {
   Cost: number;
 }
 
-
 // Load from localStorage if available
 const savedSKUs = localStorage.getItem("skus");
 const initialState: { skus: SKU[] } = {
@@ -29,13 +28,13 @@ const skuSlice = createSlice({
       state.skus = state.skus.filter((sku) => sku.ID !== action.payload);
       localStorage.setItem("skus", JSON.stringify(state.skus));
     },
-    updateSKU: (state, action: PayloadAction<{ ID: string; field: string; value: string }>) => {
-      const sku = state.skus.find((s) => s.ID === action.payload.ID);
-      if (sku) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (sku as any)[action.payload.field] = action.payload.value;
-        localStorage.setItem("skus", JSON.stringify(state.skus));
-      }
+    updateSKU: (state, action: PayloadAction<{ ID: string; field: string; value: string | number }>) => {
+      state.skus = state.skus.map((sku) =>
+        sku.ID === action.payload.ID
+          ? { ...sku, [action.payload.field]: action.payload.value } // ✅ Create new object
+          : sku
+      );
+      localStorage.setItem("skus", JSON.stringify(state.skus));
     },
   },
 });

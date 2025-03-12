@@ -4,16 +4,25 @@ import StorePage from "../pages/Store";
 import SKUPage from "../pages/SKU";
 import PlanningPage from "../pages/Planning";
 import ChartsPage from "../pages/Chart";
+import PrivateRoute from "../components/PrivateRoute";
+import Login from "../pages/Login";
 
 const routes: RouteObject[] = [
+  { path: "/login", element: <Login /> },
   {
     path: "/",
-    element: <Layout />, 
+    element: <PrivateRoute />, // Private route wrapper
     children: [
-      { path: "store", element: <StorePage /> },
-      { path: "sku", element: <SKUPage /> },
-      { path: "planning", element: <PlanningPage /> },
-      { path: "charts", element: <ChartsPage /> },
+      {
+        path: "/", 
+        element: <Layout />, // Layout should wrap child pages
+        children: [
+          { path: "planning", element: <PlanningPage /> },
+          { path: "store", element: <StorePage /> },
+          { path: "sku", element: <SKUPage /> },
+          { path: "charts", element: <ChartsPage /> },
+        ],
+      },
     ],
   },
 ];

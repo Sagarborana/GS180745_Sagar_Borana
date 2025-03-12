@@ -7,7 +7,7 @@ import { ClientSideRowModelModule, ModuleRegistry } from "ag-grid-community";
 import { MdDeleteOutline } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store/store";
-import { addStore, deleteStore } from "../redux/slices/storeSlice";
+import { addStore, deleteStore } from "../redux/slices/storeSlice.ts";
 
 ModuleRegistry.registerModules([RowDragModule, ClientSideRowModelModule]);
 
