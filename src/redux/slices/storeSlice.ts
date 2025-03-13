@@ -17,6 +17,13 @@ export interface StoreWithSeq {
 }
 // Load data from localStorage if available
 const savedStores = localStorage.getItem("stores");
+if (!savedStores){
+  const storeData =  storesData.map((store, index) => ({
+    ...store,
+    seqId: index + 1, // Assign seqId initially
+  }));
+  localStorage.setItem("stores", JSON.stringify(storeData));
+} 
 const initialState: { stores: StoreWithSeq[] } = {
   stores: savedStores ? JSON.parse(savedStores) : storesData.map((store, index) => ({
     ...store,

@@ -12,6 +12,10 @@ export interface SKU {
 
 // Load from localStorage if available
 const savedSKUs = localStorage.getItem("skus");
+if (!savedSKUs){
+  localStorage.setItem("skus", JSON.stringify(skusData));
+} 
+
 const initialState: { skus: SKU[] } = {
   skus: savedSKUs ? JSON.parse(savedSKUs) : skusData,
 };

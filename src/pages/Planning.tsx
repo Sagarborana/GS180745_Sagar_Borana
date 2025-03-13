@@ -54,7 +54,7 @@ const PlanningPage: React.FC = () => {
     });
 
     return [
-      { headerName: "Store", field: "store", rowGroup: true },
+      { headerName: "Store", field: "store"},
       { headerName: "SKU", field: "sku" },
       ...Object.keys(monthMap).map((monthLabel) => ({
         headerName: monthLabel,
