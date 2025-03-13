@@ -23,14 +23,13 @@ const planningSlice = createSlice({
   reducers: {
     calculatePlanningData: (
       state,
-      action: PayloadAction<{ stores: StoreWithSeq[]; skus: SKU[] }>
+      action: PayloadAction<{ stores: StoreWithSeq[]; skus: SKU[], initialRender?: boolean }>
     ) => {
       // Prevent reloading if planning data already exists
-      if (state.planning.length > 0) return;
-
-      const { stores, skus } = action.payload;
+      const { stores, skus, initialRender=false } = action.payload;
+      
+      if (initialRender && state.planning.length > 0) return;
       const planningMap: Record<string, any> = {};
-
       stores.forEach((store) => {
         skus.forEach((sku) => {
           const key = `${store.ID}-${sku.ID}`;
@@ -73,6 +72,7 @@ const planningSlice = createSlice({
       });
 
       state.planning = Object.values(planningMap);
+      console.log("updated")
     },
 
     updateSalesUnits: (

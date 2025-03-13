@@ -6,6 +6,7 @@ import { useEffect, useMemo } from "react";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import calendarData from "../mockdata/calendar.json";
 import {
+  AllCommunityModule,
   CellClassParams,
   CellStyleModule,
   ClientSideRowModelModule,
@@ -22,6 +23,7 @@ import {
 import "../index.css";
 import { RootState } from "../redux/store/store";
 import DefaultAgGrid from "../utils/DefaultAgGrid.tsx";
+import { SKU } from "../redux/slices/skuSlice.ts";
 
 ModuleRegistry.registerModules([
   ColumnApiModule,
@@ -29,20 +31,21 @@ ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   TextEditorModule,
   NumberEditorModule,
-  CellStyleModule
+  CellStyleModule,
+  AllCommunityModule
 ]);
 const PlanningPage: React.FC = () => {
   const dispatch = useDispatch();
-  const planning = useSelector((state: RootState) => state.planning.planning);
-  
-  const planningData = planning.map((item: any) => ({ ...item }));
+  const planningData = useSelector((state: RootState) => state.planning.planning);
+
   const storesData = useSelector((state: RootState) => state.store.stores);
-  const skusData = useSelector((state: RootState) => state.sku.skus);
+    const sku = useSelector((state: RootState) => state.sku.skus);
+    const skusData = sku.map((unit: SKU) => ({ ...unit }));
 
   useEffect(() => {
-    dispatch(calculatePlanningData({ stores: storesData, skus: skusData }));
-  }, [storesData, skusData, dispatch]);
-
+    dispatch(calculatePlanningData({ stores: storesData, skus: skusData, initialRender: true }));
+  }, [dispatch, skusData, storesData]);
+  
   const columnDefsMemo = useMemo(() => {
     const monthMap: Record<string, any[]> = {};
     calendarData.forEach((week) => {
@@ -109,7 +112,7 @@ const PlanningPage: React.FC = () => {
         skuID: data.skuID,
         week,
         value: Number(newValue) || 0,
-        skus: skusData, // ✅ Pass SKU data for correct calculations
+        skus: skusData,
       }));
     }
   };

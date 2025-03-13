@@ -35,7 +35,7 @@ const skuSlice = createSlice({
     updateSKU: (state, action: PayloadAction<{ ID: string; field: string; value: string | number }>) => {
       state.skus = state.skus.map((sku) =>
         sku.ID === action.payload.ID
-          ? { ...sku, [action.payload.field]: action.payload.value } // ✅ Create new object
+          ? { ...sku, [action.payload.field]: action.payload.value }
           : sku
       );
       localStorage.setItem("skus", JSON.stringify(state.skus));

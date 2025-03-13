@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ColDef, ICellRendererParams } from "ag-grid-community";
 import {
@@ -15,6 +15,7 @@ import { RootState } from "../redux/store/store";
 import { addSKU, deleteSKU, SKU, updateSKU } from "../redux/slices/skuSlice.ts";
 import DefaultAgGrid from "../utils/DefaultAgGrid.tsx";
 import AddNewItem from "../components/AddNewItem.tsx";
+import { calculatePlanningData } from "../redux/slices/planningSlice.ts";
 
 ModuleRegistry.registerModules([
   ColumnApiModule,
@@ -28,12 +29,21 @@ const SKUPage: React.FC = () => {
   const dispatch = useDispatch();
   const sku = useSelector((state: RootState) => state.sku.skus);
   const skus = sku.map((unit: SKU) => ({ ...unit }));
+  const storesData = useSelector((state: RootState) => state.store.stores);
   
   const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    dispatch(calculatePlanningData({ stores: storesData, skus: skus }));
+  }, [storesData, skus, dispatch]);
 
   const deleteRow = (id: string) => {
     dispatch(deleteSKU(id));
   };
+
+  useEffect(() => {
+    console.log("changed")
+  },[skus])
 
   const addNewSKU = (newSKU: { ID: string, Label: string, Class: string, Department: string, Cost: number | string, Price: number | string }) => {
 
