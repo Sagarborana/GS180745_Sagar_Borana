@@ -11,7 +11,7 @@ const Sidebar: React.FC = () => {
         <ul className="list-none py-4">
           <li>
             <NavLink
-              to="/GS180745_Sagar_Borana/store"
+              to="/store"
               className={({ isActive }) =>
                 `block py-4 px-6 hover:bg-[#DFDFDF] flex gap-2 ${
                   isActive ? "bg-[#DFDFDF]" : ""
@@ -24,7 +24,7 @@ const Sidebar: React.FC = () => {
           </li>
           <li>
             <NavLink
-              to="/GS180745_Sagar_Borana/sku"
+              to="/sku"
               className={({ isActive }) =>
                 `block py-4 px-6 hover:bg-[#DFDFDF] flex gap-2 ${
                   isActive ? "bg-[#DFDFDF]" : ""
@@ -37,7 +37,7 @@ const Sidebar: React.FC = () => {
           </li>
           <li>
             <NavLink
-              to="/GS180745_Sagar_Borana/planning"
+              to="/planning"
               className={({ isActive }) =>
                 `block py-4 px-6 hover:bg-[#DFDFDF] flex gap-2 ${
                   isActive ? "bg-[#DFDFDF]" : ""
@@ -50,7 +50,7 @@ const Sidebar: React.FC = () => {
           </li>
           <li>
             <NavLink
-              to="/GS180745_Sagar_Borana/charts"
+              to="/charts"
               className={({ isActive }) =>
                 `block py-4 px-6 hover:bg-[#DFDFDF] flex gap-2 ${
                   isActive ? "bg-[#DFDFDF]" : ""

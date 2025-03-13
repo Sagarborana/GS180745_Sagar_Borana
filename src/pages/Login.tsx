@@ -14,7 +14,7 @@ const Login = () => {
 
     if (username === dummyUser.email && password === dummyUser.password) {
       dispatch(login(username));
-      navigate("/GS180745_Sagar_Borana"); // Redirect to the main app
+      navigate("/"); // Redirect to the main app
     } else {
       alert("Invalid credentials!");
     }
