@@ -1,35 +1,37 @@
-name: Deploy React Vite App to GitHub Pages
+name: Deploy to Github Pages
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-      - gh-pages
 
 jobs:
-  deploy:
+  build-deploy:
     runs-on: ubuntu-latest
+
     steps:
+      # Checkout the repository
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Setup Nodejs
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
+      # Install Dependencies
       - name: Install Dependencies
         run: npm install
 
+      # Build the project
       - name: Build Project
         run: npm run build
 
-      - name: Disable Jekyll
-        run: touch dist/.nojekyl
-
+      # Deploy to github pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: dist
-          publish_branch: gh-pages
