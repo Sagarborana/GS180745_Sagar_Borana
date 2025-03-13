@@ -21,6 +21,7 @@ const StorePage: React.FC = () => {
 
   const [showPopup, setShowPopup] = useState(false);
 
+  // Function to add new store
   const handleAddStore = (newStore: { ID: string; Label: string; City: string; State: string }) => {
     if (stores.some((store) => store.ID === newStore.ID)) {
       alert("Store ID already exists! Please enter a unique ID.");
@@ -31,6 +32,7 @@ const StorePage: React.FC = () => {
     setShowPopup(false);
   };
 
+  // Function to delete a store
   const handleDelete = (id: string) => {
     dispatch(deleteStore(id));
   };
@@ -68,6 +70,7 @@ const StorePage: React.FC = () => {
         New Store
       </button>
 
+      {/* opens dialog to add a new store */}
       {showPopup && (
         <AddNewItem
           title="Add New Store"

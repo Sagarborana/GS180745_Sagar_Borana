@@ -33,6 +33,7 @@ const SKUPage: React.FC = () => {
   
   const [showPopup, setShowPopup] = useState(false);
 
+  // updates planning data when cost or price of a sku changes
   useEffect(() => {
     dispatch(calculatePlanningData({ stores: storesData, skus: skus }));
   }, [storesData, skus, dispatch]);
@@ -41,12 +42,9 @@ const SKUPage: React.FC = () => {
     dispatch(deleteSKU(id));
   };
 
-  useEffect(() => {
-    console.log("changed")
-  },[skus])
-
   const addNewSKU = (newSKU: { ID: string, Label: string, Class: string, Department: string, Cost: number | string, Price: number | string }) => {
 
+    // checks for duplicate sku ID 
     const isDuplicate = skus.some((SKU) => SKU.ID === newSKU.ID);
     if (isDuplicate) {
       alert("SKU ID already exists! Please enter a unique ID.");
@@ -103,6 +101,8 @@ const SKUPage: React.FC = () => {
       <button onClick={() => setShowPopup(true)} className="mt-4 p-2 bg-orange-400 text-white rounded cursor-pointer">
         New SKU
       </button>
+
+      {/* opens dialog box to add a new sku */}
       {showPopup && (
         <AddNewItem
           title="Add New SKU"

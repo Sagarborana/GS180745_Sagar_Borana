@@ -36,12 +36,14 @@ ModuleRegistry.registerModules([
 ]);
 const PlanningPage: React.FC = () => {
   const dispatch = useDispatch();
-  const planningData = useSelector((state: RootState) => state.planning.planning);
+  const planning = useSelector((state: RootState) => state.planning.planning);
+  const planningData = planning.map((item: any) => ({ ...item }));
 
   const storesData = useSelector((state: RootState) => state.store.stores);
     const sku = useSelector((state: RootState) => state.sku.skus);
     const skusData = sku.map((unit: SKU) => ({ ...unit }));
 
+  // calculate planning data on initial render
   useEffect(() => {
     dispatch(calculatePlanningData({ stores: storesData, skus: skusData, initialRender: true }));
   }, [dispatch, skusData, storesData]);
@@ -102,6 +104,7 @@ const PlanningPage: React.FC = () => {
     ];
   }, []);
 
+  // update sales unit
   const onCellValueChanged = (params: any) => {
     const { data, colDef, newValue } = params;
     if (colDef.field.startsWith("salesUnits_")) {

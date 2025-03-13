@@ -72,7 +72,6 @@ const planningSlice = createSlice({
       });
 
       state.planning = Object.values(planningMap);
-      console.log("updated")
     },
 
     updateSalesUnits: (
