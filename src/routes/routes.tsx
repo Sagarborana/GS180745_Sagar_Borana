@@ -11,11 +11,11 @@ const routes: RouteObject[] = [
   { path: "/login", element: <Login /> },
   {
     path: "/",
-    element: <PrivateRoute />, // Private route wrapper
+    element: <PrivateRoute />,
     children: [
       {
         path: "/",
-        element: <Layout />, // Layout should wrap child pages
+        element: <Layout />,
         children: [
           { index: true, element: <Navigate to="store" replace /> }, // Redirect root to /store
           { path: "planning", element: <PlanningPage /> },
