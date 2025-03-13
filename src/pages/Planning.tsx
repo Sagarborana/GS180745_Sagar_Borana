@@ -72,13 +72,13 @@ const PlanningPage: React.FC = () => {
               headerName: "Sales Dollars",
               field: `salesDollars_${week.Week}`,
               valueFormatter: (params: ValueFormatterParams) =>
-                params.value ? `$${params.value.toFixed(2)}` : "$0.00",
+                params.value ? `$ ${params.value.toFixed(2)}` : "$ 0.00",
             },
             {
               headerName: "GM Dollars",
               field: `gmDollars_${week.Week}`,
               valueFormatter: (params: ValueFormatterParams) =>
-                params.value ? `$${params.value.toFixed(2)}` : "$0.00",
+                params.value ? `$ ${params.value.toFixed(2)}` : "$ 0.00",
             },
             {
               headerName: "GM %",

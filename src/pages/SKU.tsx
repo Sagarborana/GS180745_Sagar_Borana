@@ -75,7 +75,7 @@ const SKUPage: React.FC = () => {
         </button>
       ),
     },
-    { headerName: "SKU", field: "Label", editable:  true },
+    { headerName: "SKU", field: "Label" },
     { headerName: "Price", field: "Price", editable: true },
     { headerName: "Cost", field: "Cost", editable: true },
   ];
